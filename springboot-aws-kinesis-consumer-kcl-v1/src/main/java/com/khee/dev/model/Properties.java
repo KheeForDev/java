@@ -8,6 +8,9 @@ public class Properties {
 	@Value("${application.name}")
 	private String applicationName;
 
+	@Value("${aws.kinesis.region}")
+	private String awsKinesisRegion;
+
 	@Value("${aws.kinesis.stream}")
 	private String awsKinesisStream;
 
@@ -17,15 +20,20 @@ public class Properties {
 	@Value("${aws.kinesis.secret.key}")
 	private String awsKinesisSecretKey;
 
-	@Value("${aws.kinesis.region}")
-	private String awsKinesisRegion;
-
 	public String getApplicationName() {
 		return applicationName;
 	}
 
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
+	}
+
+	public String getAwsKinesisRegion() {
+		return awsKinesisRegion;
+	}
+
+	public void setAwsKinesisRegion(String awsKinesisRegion) {
+		this.awsKinesisRegion = awsKinesisRegion;
 	}
 
 	public String getAwsKinesisStream() {
@@ -50,13 +58,5 @@ public class Properties {
 
 	public void setAwsKinesisSecretKey(String awsKinesisSecretKey) {
 		this.awsKinesisSecretKey = awsKinesisSecretKey;
-	}
-
-	public String getAwsKinesisRegion() {
-		return awsKinesisRegion;
-	}
-
-	public void setAwsKinesisRegion(String awsKinesisRegion) {
-		this.awsKinesisRegion = awsKinesisRegion;
 	}
 }

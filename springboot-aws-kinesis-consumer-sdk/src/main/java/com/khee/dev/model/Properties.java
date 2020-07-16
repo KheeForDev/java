@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Properties {
+	@Value("${aws.kinesis.region}")
+	private String awsKinesisRegion;
+
 	@Value("${aws.kinesis.stream}")
 	private String awsKinesisStream;
 
@@ -14,9 +17,6 @@ public class Properties {
 	@Value("${aws.kinesis.secret.key}")
 	private String awsKinesisSecretKey;
 
-	@Value("${aws.kinesis.region}")
-	private String awsKinesisRegion;
-
 	@Value("${aws.kinesis.shard.iterator.type}")
 	private String awsKinesisShardIteratorType;
 
@@ -25,6 +25,14 @@ public class Properties {
 
 	@Value("${aws.kinesis.timestamp}")
 	private String awsKinesisTimestamp;
+
+	public String getAwsKinesisRegion() {
+		return awsKinesisRegion;
+	}
+
+	public void setAwsKinesisRegion(String awsKinesisRegion) {
+		this.awsKinesisRegion = awsKinesisRegion;
+	}
 
 	public String getAwsKinesisStream() {
 		return awsKinesisStream;
@@ -48,14 +56,6 @@ public class Properties {
 
 	public void setAwsKinesisSecretKey(String awsKinesisSecretKey) {
 		this.awsKinesisSecretKey = awsKinesisSecretKey;
-	}
-
-	public String getAwsKinesisRegion() {
-		return awsKinesisRegion;
-	}
-
-	public void setAwsKinesisRegion(String awsKinesisRegion) {
-		this.awsKinesisRegion = awsKinesisRegion;
 	}
 
 	public String getAwsKinesisShardIteratorType() {
