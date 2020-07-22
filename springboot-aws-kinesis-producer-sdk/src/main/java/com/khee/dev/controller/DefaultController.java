@@ -17,7 +17,7 @@ public class DefaultController {
 	private Producer producer;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/sendData")
-	public void MethodTwo() throws Exception {
+	public void SendData() throws Exception {
 		String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		String payload = "data_" + timestamp;
 
