@@ -3,7 +3,10 @@ package com.khee.dev.kinesis;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,7 @@ import com.khee.dev.model.Properties;
 
 @Component
 public class Producer {
+	private static final Logger log = LogManager.getLogger(Producer.class);
 
 	@Autowired
 	private Properties properties;
@@ -44,17 +48,17 @@ public class Producer {
 
 		PutRecordsRequestEntry putRecordsRequestEntry = new PutRecordsRequestEntry();
 		putRecordsRequestEntry.setData(ByteBuffer.wrap(String.valueOf(payload).getBytes()));
-		putRecordsRequestEntry.setPartitionKey("partitionKey");
+		putRecordsRequestEntry.setPartitionKey(String.valueOf(UUID.randomUUID()));
 		putRecordsRequestEntryList.add(putRecordsRequestEntry);
 
 		putRecordsRequest.setRecords(putRecordsRequestEntryList);
 		PutRecordsResult putRecordsResult = kinesisClient.putRecords(putRecordsRequest);
 
 		try {
-			System.out.println("Put Result "
+			log.info("Put Result "
 					+ new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
 		} catch (JsonProcessingException e) {
-			System.out.println(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		while (putRecordsResult.getFailedRecordCount() > 0) {
@@ -72,10 +76,10 @@ public class Producer {
 			putRecordsResult = kinesisClient.putRecords(putRecordsRequest);
 
 			try {
-				System.out.println("Put Result "
+				log.info("Put Result "
 						+ new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
 			} catch (JsonProcessingException e) {
-				System.out.println(e.getMessage());
+				log.error(e.getMessage());
 			}
 		}
 	}
