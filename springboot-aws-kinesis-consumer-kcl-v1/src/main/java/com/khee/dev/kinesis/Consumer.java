@@ -36,6 +36,7 @@ public class Consumer implements CommandLineRunner {
 		KinesisClientLibConfiguration kinesisClientLibConfiguration = new KinesisClientLibConfiguration(
 				properties.getApplicationName(), properties.getAwsKinesisStream(), credentialsProvider, workerId);
 		kinesisClientLibConfiguration.withRegionName(properties.getAwsKinesisRegion());
+		kinesisClientLibConfiguration.withMaxRecords(10);
 		kinesisClientLibConfiguration.withInitialPositionInStream(InitialPositionInStream.TRIM_HORIZON);
 
 		IRecordProcessorFactory recordProcessorFactory = new RecordProcessorFactory();
