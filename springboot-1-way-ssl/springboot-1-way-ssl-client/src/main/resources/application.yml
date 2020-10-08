@@ -1,0 +1,9 @@
+server:
+  port: 7070
+
+client:
+  ssl:
+    one-way-authentication-enabled: true
+    two-way-authentication-enabled: false
+    trust-store: classpath:truststore.jks
+    trust-store-password: s3cr3t
