@@ -21,34 +21,33 @@ import software.amazon.kinesis.coordinator.Scheduler;
 
 @Component
 public class Consumer implements CommandLineRunner {
-
-	@Autowired
-	private Properties properties;
-
 	private KinesisAsyncClient kinesisClient;
 	private DynamoDbAsyncClient dynamoClient;
 	private CloudWatchAsyncClient cloudWatchClient;
 	private Region region = Region.AP_SOUTHEAST_1;
 	private ConfigsBuilder configsBuilder;
 
+	@Autowired
+	private Properties properties;
+
+	@Autowired
+	private RecordProcessorFactory recordProcessorFactory;
+
 	@Override
 	public void run(String... args) throws Exception {
-//		ExecutorService executor = Executors.newFixedThreadPool(1);
-//		CallableKinesisConsumer callableKinesisConsumer = new CallableKinesisConsumer();
-//		executor.submit(callableKinesisConsumer);
-
 		AwsCredentials credentials = AwsBasicCredentials.create(properties.getAwsKinesisAccessKey(),
 				properties.getAwsKinesisSecretKey());
-		
+
 		AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(credentials);
 
 		this.kinesisClient = KinesisAsyncClient.builder().credentialsProvider(credentialsProvider).region(region)
 				.build();
-		this.dynamoClient = DynamoDbAsyncClient.builder().credentialsProvider(credentialsProvider).region(region).build();
-		this.cloudWatchClient = CloudWatchAsyncClient.builder().credentialsProvider(credentialsProvider).region(region).build();
+		this.dynamoClient = DynamoDbAsyncClient.builder().credentialsProvider(credentialsProvider).region(region)
+				.build();
+		this.cloudWatchClient = CloudWatchAsyncClient.builder().credentialsProvider(credentialsProvider).region(region)
+				.build();
 		configsBuilder = new ConfigsBuilder(properties.getAwsKinesisStream(), properties.getApplicationName(),
-				kinesisClient, dynamoClient, cloudWatchClient, UUID.randomUUID().toString(),
-				new RecordProcessorFactory());
+				kinesisClient, dynamoClient, cloudWatchClient, UUID.randomUUID().toString(), recordProcessorFactory);
 
 		Scheduler scheduler = new Scheduler(configsBuilder.checkpointConfig(), configsBuilder.coordinatorConfig(),
 				configsBuilder.leaseManagementConfig(), configsBuilder.lifecycleConfig(),

@@ -6,6 +6,10 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.khee.dev.service.DefaultService;
 
 import software.amazon.kinesis.exceptions.InvalidStateException;
 import software.amazon.kinesis.exceptions.ShutdownException;
@@ -17,6 +21,7 @@ import software.amazon.kinesis.lifecycle.events.ShutdownRequestedInput;
 import software.amazon.kinesis.processor.ShardRecordProcessor;
 import software.amazon.kinesis.retrieval.KinesisClientRecord;
 
+@Component
 public class RecordProcessor implements ShardRecordProcessor {
 	private static final Logger log = LogManager.getLogger(RecordProcessor.class);
 
@@ -24,6 +29,9 @@ public class RecordProcessor implements ShardRecordProcessor {
 
 	private HashMap<String, String> shardMap;
 	private String shardId;
+
+	@Autowired
+	private DefaultService defaultService;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public RecordProcessor() {
@@ -55,6 +63,8 @@ public class RecordProcessor implements ShardRecordProcessor {
 
 				log.info("Processing record pk: {} -- Seq: {} -- Data: {}", record.partitionKey(),
 						record.sequenceNumber(), text);
+
+				defaultService.process(text);
 			}
 		} catch (Throwable t) {
 			log.error("Caught throwable while processing records.  Aborting");
