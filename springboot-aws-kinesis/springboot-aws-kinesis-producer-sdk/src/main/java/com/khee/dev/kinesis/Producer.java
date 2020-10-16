@@ -55,8 +55,8 @@ public class Producer {
 		PutRecordsResult putRecordsResult = kinesisClient.putRecords(putRecordsRequest);
 
 		try {
-			log.info("Put Result "
-					+ new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
+			log.info("Put Result {}",
+					new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
 		} catch (JsonProcessingException e) {
 			log.error(e.getMessage());
 		}
@@ -76,8 +76,8 @@ public class Producer {
 			putRecordsResult = kinesisClient.putRecords(putRecordsRequest);
 
 			try {
-				log.info("Put Result "
-						+ new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
+				log.info("Put Result {}",
+						new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(putRecordsResult));
 			} catch (JsonProcessingException e) {
 				log.error(e.getMessage());
 			}
