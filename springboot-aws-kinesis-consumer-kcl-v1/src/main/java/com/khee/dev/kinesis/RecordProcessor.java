@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.kinesis.clientlibrary.exceptions.InvalidStateException;
 import com.amazonaws.services.kinesis.clientlibrary.exceptions.ShutdownException;
@@ -18,7 +20,9 @@ import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownInput;
 import com.amazonaws.services.kinesis.model.Record;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khee.dev.service.DefaultService;
 
+@Component
 public class RecordProcessor implements IRecordProcessor {
 	private static final Logger log = LogManager.getLogger(RecordProcessor.class);
 
@@ -32,15 +36,18 @@ public class RecordProcessor implements IRecordProcessor {
 	private static final long CHECKPOINT_INTERVAL_MILLIS = 60000L;
 	private long nextCheckpointTimeInMillis;
 
+	@Autowired
+	private DefaultService defaultService;
+
 	@Override
 	public void initialize(InitializationInput initializationInput) {
-		log.info("Initializing record processor for shard: " + initializationInput.getShardId());
+		log.info("Initializing record processor for shard: {}", initializationInput.getShardId());
 		this.kinesisShardId = initializationInput.getShardId();
 	}
 
 	@Override
 	public void processRecords(ProcessRecordsInput processRecordsInput) {
-		log.info("Processing " + processRecordsInput.getRecords().size() + " records from " + kinesisShardId);
+		log.info("Processing {} records from {}", processRecordsInput.getRecords().size(), kinesisShardId);
 
 		// Process records and perform all exception handling.
 		processRecordsWithRetries(processRecordsInput.getRecords());
@@ -54,7 +61,7 @@ public class RecordProcessor implements IRecordProcessor {
 
 	@Override
 	public void shutdown(ShutdownInput shutdownInput) {
-		log.info("Shutting down record processor for shard: " + kinesisShardId);
+		log.info("Shutting down record processor for shard: {}", kinesisShardId);
 		// Important to checkpoint after reaching end of shard, so we can start
 		// processing data from child shards.
 		if (shutdownInput.getShutdownReason() == ShutdownReason.TERMINATE) {
@@ -75,7 +82,7 @@ public class RecordProcessor implements IRecordProcessor {
 					processedSuccessfully = true;
 					break;
 				} catch (Throwable t) {
-					log.warn("Caught throwable while processing record " + record, t);
+					log.warn("Caught throwable while processing record {}", record, t);
 				}
 
 				// backoff if we encounter an exception.
@@ -87,7 +94,7 @@ public class RecordProcessor implements IRecordProcessor {
 			}
 
 			if (!processedSuccessfully) {
-				log.error("Couldn't process record " + record + ". Skipping the record.");
+				log.error("Couldn't process record {}. Skipping the record.", record);
 			}
 		}
 	}
@@ -102,6 +109,8 @@ public class RecordProcessor implements IRecordProcessor {
 		try {
 			log.info(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(record));
 			log.info(new String(record.getData().array(), "UTF-8"));
+
+			defaultService.process(new String(record.getData().array(), "UTF-8"));
 		} catch (JsonProcessingException | UnsupportedEncodingException e) {
 			log.info(e.getMessage());
 		}
@@ -113,7 +122,7 @@ public class RecordProcessor implements IRecordProcessor {
 	 * @param checkpointer
 	 */
 	private void checkpoint(IRecordProcessorCheckpointer checkpointer) {
-		log.info("Checkpointing shard " + kinesisShardId);
+		log.info("Checkpointing shard {}", kinesisShardId);
 		for (int i = 0; i < NUM_RETRIES; i++) {
 			try {
 				checkpointer.checkpoint();

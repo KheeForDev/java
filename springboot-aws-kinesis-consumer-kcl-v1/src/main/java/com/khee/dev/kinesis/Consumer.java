@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.kinesis.clientlibrary.interfaces.v2.IRecordProcessorFactory;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.InitialPositionInStream;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.KinesisClientLibConfiguration;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.Worker;
@@ -25,6 +24,9 @@ public class Consumer implements CommandLineRunner {
 	@Autowired
 	private Properties properties;
 
+	@Autowired
+	private RecordProcessorFactory recordProcessorFactory;
+
 	@Override
 	public void run(String... args) throws Exception {
 		BasicAWSCredentials credentials = new BasicAWSCredentials(properties.getAwsKinesisAccessKey(),
@@ -36,10 +38,14 @@ public class Consumer implements CommandLineRunner {
 		KinesisClientLibConfiguration kinesisClientLibConfiguration = new KinesisClientLibConfiguration(
 				properties.getApplicationName(), properties.getAwsKinesisStream(), credentialsProvider, workerId);
 		kinesisClientLibConfiguration.withRegionName(properties.getAwsKinesisRegion());
+
+		// Maximum number of records to fetch in a Kinesis getRecords() call
+		// Minimum value of 1
+		// Maximum value of 10000
+		// Default value is 10000 without defining
 		kinesisClientLibConfiguration.withMaxRecords(10);
 		kinesisClientLibConfiguration.withInitialPositionInStream(InitialPositionInStream.TRIM_HORIZON);
 
-		IRecordProcessorFactory recordProcessorFactory = new RecordProcessorFactory();
 		Worker worker = new Worker.Builder().recordProcessorFactory(recordProcessorFactory)
 				.config(kinesisClientLibConfiguration).build();
 
