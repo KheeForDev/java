@@ -1,0 +1,10 @@
+server:
+  port: 7171
+  ssl:
+    enabled: true
+    key-store: classpath:keystore_server.jks
+    key-password: s3cr3ts3rv3r
+    key-store-password: s3cr3ts3rv3r
+    trust-store: classpath:truststore_client.jks
+    trust-store-password: s3cr3tcli3nt
+    client-auth: need
