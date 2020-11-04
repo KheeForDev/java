@@ -15,6 +15,9 @@ import java.util.Map;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,14 +29,14 @@ import com.opencsv.CSVWriter;
 
 @Component
 public class DefaultComponent implements CommandLineRunner {
-	private static HashMap<Integer, List<CsvDataDto>> dmpDataHashmap = new HashMap<>();
 	private static List<File> fileList = new ArrayList<File>();
 
 	@Override
 	public void run(String... args) throws Exception {
+		HashMap<Integer, List<CsvDataDto>> dmpDataHashmap = new HashMap<>();
 		int dataCount = 0;
 
-		listFiles("input_raw_sub");
+		listFiles("src/main/resources/input_raw/");
 		System.out.println("Total file to process : " + fileList.size());
 
 		if (fileList.size() > 0) {
@@ -76,7 +79,8 @@ public class DefaultComponent implements CommandLineRunner {
 
 		System.out.println("Total data to process : " + dataCount);
 
-		writeDataToCsv();
+		writeDataToCsv(dmpDataHashmap);
+		writeDataToCsv(dmpDataHashmap, dataCount);
 		System.exit(0);
 	}
 
@@ -126,10 +130,10 @@ public class DefaultComponent implements CommandLineRunner {
 		}
 	}
 
-	private void writeDataToCsv() {
+	private void writeDataToCsv(HashMap<Integer, List<CsvDataDto>> dmpDataHashmap) {
 		// first create file object for file placed at location
 		// specified by filepath
-		File file = new File("dmp_flat_data.csv");
+		File file = new File("dmp_flat_data_using_opencsv.csv");
 
 		try {
 			// create FileWriter object with file as parameter
@@ -141,7 +145,7 @@ public class DefaultComponent implements CommandLineRunner {
 			// create a List which contains String array
 			List<String[]> data = new ArrayList<String[]>();
 
-			data.add(new String[] { "Audience_ID, Insider_ID, Bluekai_ID, Delivery_Timestamp_with_Timezone" });
+			data.add(new String[] { "COL_1, COL_2, COL_3, COL_4" });
 
 			for (Map.Entry me : dmpDataHashmap.entrySet()) {
 				List<CsvDataDto> csvDataDtoList = (List<CsvDataDto>) me.getValue();
@@ -159,5 +163,48 @@ public class DefaultComponent implements CommandLineRunner {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	private void writeDataToCsv(HashMap<Integer, List<CsvDataDto>> dmpDataHashmap, Integer dataCount) {
+		int rowIndex = 1;
+		String[][] csvMatrix = new String[dataCount + 1][4];
+		csvMatrix[0][0] = "COL_1";
+		csvMatrix[0][1] = "COL_2";
+		csvMatrix[0][2] = "COL_3";
+		csvMatrix[0][3] = "COL_4";
+
+		for (Map.Entry me : dmpDataHashmap.entrySet()) {
+			List<CsvDataDto> csvDataDtoList = (List<CsvDataDto>) me.getValue();
+
+			if (csvDataDtoList.size() > 0) {
+				for (CsvDataDto csvDataDto : csvDataDtoList) {
+					csvMatrix[rowIndex][0] = String.valueOf(csvDataDto.getCampaignId());
+					csvMatrix[rowIndex][1] = csvDataDto.getPartnerUuid();
+					csvMatrix[rowIndex][2] = csvDataDto.getBkUuid();
+					csvMatrix[rowIndex][3] = csvDataDto.getDeliveryTime();
+					rowIndex++;
+				}
+			}
+		}
+
+		ICsvListWriter csvWriter = null;
+		try {
+			csvWriter = new CsvListWriter(new FileWriter("dmp_flat_data_using_supercsv.csv"),
+					CsvPreference.STANDARD_PREFERENCE);
+
+			for (int i = 0; i < csvMatrix.length; i++) {
+				csvWriter.write(csvMatrix[i]);
+			}
+
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				csvWriter.close();
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
 	}
 }
