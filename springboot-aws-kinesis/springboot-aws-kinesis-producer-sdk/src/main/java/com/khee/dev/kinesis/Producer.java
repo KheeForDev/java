@@ -27,20 +27,13 @@ import com.khee.dev.model.Properties;
 public class Producer {
 	private static final Logger log = LogManager.getLogger(Producer.class);
 
+	private AmazonKinesisClientBuilder clientBuilder = null;
+
 	@Autowired
 	private Properties properties;
 
 	public void putIntoKinesis(String payload) {
-		AmazonKinesisClientBuilder clientBuilder = AmazonKinesisClientBuilder.standard();
-
-		BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsKinesisAccessKey(),
-				properties.getAwsKinesisSecretKey());
-
-		clientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
-		clientBuilder.setRegion(properties.getAwsKinesisRegion());
-		clientBuilder.setClientConfiguration(new ClientConfiguration());
-
-		AmazonKinesis kinesisClient = clientBuilder.build();
+		AmazonKinesis kinesisClient = getClientBuilder().build();
 
 		PutRecordsRequest putRecordsRequest = new PutRecordsRequest();
 		putRecordsRequest.setStreamName(properties.getAwsKinesisStream());
@@ -82,5 +75,21 @@ public class Producer {
 				log.error(e.getMessage());
 			}
 		}
+	}
+
+	private AmazonKinesisClientBuilder getClientBuilder() {
+		if (clientBuilder == null) {
+			log.info("Initialize AWS Kinesis Client Builder");
+			clientBuilder = AmazonKinesisClientBuilder.standard();
+
+			BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsKinesisAccessKey(),
+					properties.getAwsKinesisSecretKey());
+
+			clientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
+			clientBuilder.setRegion(properties.getAwsKinesisRegion());
+			clientBuilder.setClientConfiguration(new ClientConfiguration());
+		}
+
+		return clientBuilder;
 	}
 }
