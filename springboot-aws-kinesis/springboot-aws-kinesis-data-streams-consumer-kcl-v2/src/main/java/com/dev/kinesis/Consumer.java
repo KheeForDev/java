@@ -24,7 +24,7 @@ public class Consumer implements CommandLineRunner {
 	private KinesisAsyncClient kinesisClient;
 	private DynamoDbAsyncClient dynamoClient;
 	private CloudWatchAsyncClient cloudWatchClient;
-	private Region region = Region.AP_SOUTHEAST_1;
+//	private Region region = Region.AP_SOUTHEAST_1;
 	private ConfigsBuilder configsBuilder;
 
 	@Autowired
@@ -35,6 +35,8 @@ public class Consumer implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		Region region = Region.of(properties.getAwsRegion());
+
 		AwsCredentials awsCredentials = AwsBasicCredentials.create(properties.getAwsKinesisAccessKey(),
 				properties.getAwsKinesisSecretKey());
 

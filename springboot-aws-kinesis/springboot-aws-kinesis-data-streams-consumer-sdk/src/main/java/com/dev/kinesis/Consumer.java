@@ -37,10 +37,10 @@ public class Consumer implements CommandLineRunner {
 	public void run(String... args) {
 		BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsKinesisAccessKey(),
 				properties.getAwsKinesisSecretKey());
-		
+
 		AmazonKinesisClientBuilder amazonKinesisClientBuilder = AmazonKinesisClientBuilder.standard();
 		amazonKinesisClientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
-		amazonKinesisClientBuilder.setRegion(properties.getAwsKinesisRegion());
+		amazonKinesisClientBuilder.setRegion(properties.getAwsRegion());
 		amazonKinesisClientBuilder.setClientConfiguration(new ClientConfiguration());
 
 		AmazonKinesis amazonKinesis = amazonKinesisClientBuilder.build();

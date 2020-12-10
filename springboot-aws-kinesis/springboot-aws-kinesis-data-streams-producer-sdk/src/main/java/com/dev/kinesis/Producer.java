@@ -57,13 +57,13 @@ public class Producer {
 	private AmazonKinesisClientBuilder getAmazonKinesisClientBuilder() {
 		if (amazonKinesisClientBuilder == null) {
 			log.info("Initialize AWS Kinesis Client Builder");
-			
+
 			BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsKinesisAccessKey(),
 					properties.getAwsKinesisSecretKey());
 
 			amazonKinesisClientBuilder = AmazonKinesisClientBuilder.standard();
 			amazonKinesisClientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
-			amazonKinesisClientBuilder.setRegion(properties.getAwsKinesisRegion());
+			amazonKinesisClientBuilder.setRegion(properties.getAwsRegion());
 			amazonKinesisClientBuilder.setClientConfiguration(new ClientConfiguration());
 		}
 

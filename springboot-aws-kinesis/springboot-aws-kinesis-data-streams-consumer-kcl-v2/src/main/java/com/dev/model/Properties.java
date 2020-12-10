@@ -8,8 +8,8 @@ public class Properties {
 	@Value("${application.name}")
 	private String applicationName;
 
-	@Value("${aws.kinesis.region}")
-	private String awsKinesisRegion;
+	@Value("${aws.region}")
+	private String awsRegion;
 
 	@Value("${aws.kinesis.stream}")
 	private String awsKinesisStream;
@@ -28,12 +28,12 @@ public class Properties {
 		this.applicationName = applicationName;
 	}
 
-	public String getAwsKinesisRegion() {
-		return awsKinesisRegion;
+	public String getAwsRegion() {
+		return awsRegion;
 	}
 
-	public void setAwsKinesisRegion(String awsKinesisRegion) {
-		this.awsKinesisRegion = awsKinesisRegion;
+	public void setAwsRegion(String awsRegion) {
+		this.awsRegion = awsRegion;
 	}
 
 	public String getAwsKinesisStream() {

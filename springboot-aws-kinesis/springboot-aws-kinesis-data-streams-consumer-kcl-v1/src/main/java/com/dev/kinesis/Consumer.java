@@ -37,7 +37,7 @@ public class Consumer implements CommandLineRunner {
 		String workerId = InetAddress.getLocalHost().getCanonicalHostName() + ":" + UUID.randomUUID();
 		KinesisClientLibConfiguration kinesisClientLibConfiguration = new KinesisClientLibConfiguration(
 				properties.getApplicationName(), properties.getAwsKinesisStream(), awsCredentialsProvider, workerId);
-		kinesisClientLibConfiguration.withRegionName(properties.getAwsKinesisRegion());
+		kinesisClientLibConfiguration.withRegionName(properties.getAwsRegion());
 
 		// Maximum number of records to fetch in a Kinesis getRecords() call
 		// Minimum value of 1
