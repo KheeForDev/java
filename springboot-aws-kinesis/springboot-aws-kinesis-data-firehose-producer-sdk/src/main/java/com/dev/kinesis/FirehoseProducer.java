@@ -1,4 +1,4 @@
-package com.khee.dev.kinesis;
+package com.dev.kinesis;
 
 import java.nio.ByteBuffer;
 
@@ -15,9 +15,9 @@ import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehoseClientBuilder
 import com.amazonaws.services.kinesisfirehose.model.PutRecordRequest;
 import com.amazonaws.services.kinesisfirehose.model.PutRecordResult;
 import com.amazonaws.services.kinesisfirehose.model.Record;
+import com.dev.model.Properties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.khee.dev.model.Properties;
 
 @Component
 public class FirehoseProducer {

@@ -1,4 +1,4 @@
-package com.khee.dev.controller;
+package com.dev.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.khee.dev.kinesis.FirehoseProducer;
-import com.khee.dev.model.RequestDto;
+import com.dev.kinesis.FirehoseProducer;
+import com.dev.model.RequestDto;
 
 @RestController
 public class DefaultController {

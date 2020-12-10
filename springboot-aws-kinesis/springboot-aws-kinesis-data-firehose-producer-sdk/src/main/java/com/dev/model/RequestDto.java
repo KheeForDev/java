@@ -1,4 +1,4 @@
-package com.khee.dev.model;
+package com.dev.model;
 
 public class RequestDto {
 	private String string;
