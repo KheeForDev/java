@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Properties {
-	@Value("${aws.firehose.region}")
-	private String awsFirehoseRegion;
+	@Value("${aws.region}")
+	private String awsRegion;
 
 	@Value("${aws.firehose.stream}")
 	private String awsFirehoseStream;
@@ -17,12 +17,12 @@ public class Properties {
 	@Value("${aws.firehose.secret.key}")
 	private String awsFirehoseSecretKey;
 
-	public String getAwsFirehoseRegion() {
-		return awsFirehoseRegion;
+	public String getAwsRegion() {
+		return awsRegion;
 	}
 
-	public void setAwsFirehoseRegion(String awsFirehoseRegion) {
-		this.awsFirehoseRegion = awsFirehoseRegion;
+	public void setAwsRegion(String awsRegion) {
+		this.awsRegion = awsRegion;
 	}
 
 	public String getAwsFirehoseStream() {

@@ -54,7 +54,7 @@ public class FirehoseProducer {
 
 			amazonKinesisFirehoseClientBuilder = AmazonKinesisFirehoseClientBuilder.standard();
 			amazonKinesisFirehoseClientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
-			amazonKinesisFirehoseClientBuilder.setRegion(properties.getAwsFirehoseRegion());
+			amazonKinesisFirehoseClientBuilder.setRegion(properties.getAwsRegion());
 			amazonKinesisFirehoseClientBuilder.setClientConfiguration(new ClientConfiguration());
 		}
 
