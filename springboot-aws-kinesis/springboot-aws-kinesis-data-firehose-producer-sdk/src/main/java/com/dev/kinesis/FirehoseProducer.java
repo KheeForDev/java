@@ -23,20 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FirehoseProducer {
 	private static final Logger log = LogManager.getLogger(FirehoseProducer.class);
 
+	private AmazonKinesisFirehoseClientBuilder amazonKinesisFirehoseClientBuilder = null;
+
 	@Autowired
 	private Properties properties;
 
-	public void putIntoFirehose(String payload) {
-		AmazonKinesisFirehoseClientBuilder clientBuilder = AmazonKinesisFirehoseClientBuilder.standard();
-
-		BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsFirehoseAccessKey(),
-				properties.getAwsFirehoseSecretKey());
-
-		clientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
-		clientBuilder.setRegion(properties.getAwsFirehoseRegion());
-		clientBuilder.setClientConfiguration(new ClientConfiguration());
-
-		AmazonKinesisFirehose firehoseClient = clientBuilder.build();
+	public void putIntoKinesisFirehose(String payload) {
+		AmazonKinesisFirehose firehoseClient = getAmazonKinesisFirehoseClientBuilder().build();
 
 		PutRecordRequest putRecordRequest = new PutRecordRequest();
 		putRecordRequest.setDeliveryStreamName(properties.getAwsFirehoseStream());
@@ -50,5 +43,21 @@ public class FirehoseProducer {
 		} catch (JsonProcessingException e) {
 			log.error(e.getMessage());
 		}
+	}
+
+	public AmazonKinesisFirehoseClientBuilder getAmazonKinesisFirehoseClientBuilder() {
+		if (amazonKinesisFirehoseClientBuilder == null) {
+			log.info("Initialize Amazon Kinesis Firehose Client Builder");
+
+			BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(properties.getAwsFirehoseAccessKey(),
+					properties.getAwsFirehoseSecretKey());
+
+			amazonKinesisFirehoseClientBuilder = AmazonKinesisFirehoseClientBuilder.standard();
+			amazonKinesisFirehoseClientBuilder.setCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials));
+			amazonKinesisFirehoseClientBuilder.setRegion(properties.getAwsFirehoseRegion());
+			amazonKinesisFirehoseClientBuilder.setClientConfiguration(new ClientConfiguration());
+		}
+
+		return amazonKinesisFirehoseClientBuilder;
 	}
 }

@@ -28,6 +28,6 @@ public class DefaultController {
 
 		log.info("Payload : {}", payload);
 
-		firehoseProducer.putIntoFirehose(payload);
+		firehoseProducer.putIntoKinesisFirehose(payload);
 	}
 }
