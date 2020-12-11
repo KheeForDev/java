@@ -1,6 +1,6 @@
 package com.dev.service;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,51 +15,54 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.amazonaws.services.kinesis.model.Record;
+import com.dev.model.RequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Service
 public class CacheService {
 	private static final Logger log = LogManager.getLogger(CacheService.class);
 
 	private HashMap<String, Record> cacheHashMap = new HashMap<>();
 
 	public String process(List<Record> recordList) {
-		log.info("##### {}", recordList.size());
-
 		String checkpointSequenceNumber = null;
 		HttpStatus statusCode = null;
 		ObjectMapper mapper = new ObjectMapper();
 		List<String> orderedSequenceNumber = new ArrayList<>();
-		List<String> consolidatedDataDto = new ArrayList<>();
+		List<RequestDto> requestDtoList = new ArrayList<>();
+		List<RequestDto> consolidatedDataDto = new ArrayList<>();
 
 		orderedSequenceNumber = mergeRecord(recordList);
 		Collections.sort(orderedSequenceNumber);
 
-		log.info("##### seq number ordering {}", orderedSequenceNumber);
+		log.info("##### Sequence number ordering: {}", orderedSequenceNumber);
 		checkpointSequenceNumber = orderedSequenceNumber.get(orderedSequenceNumber.size() - 1);
-		log.info("##### latest seq number {}", checkpointSequenceNumber);
+		log.info("##### Highest sequence number: {}", checkpointSequenceNumber);
 
 		try {
 			for (String sequenceNumber : orderedSequenceNumber) {
 				if (cacheHashMap.containsKey(sequenceNumber)) {
-					String data = new String(cacheHashMap.get(sequenceNumber).getData().array(), "UTF-8");
+					String data = new String(cacheHashMap.get(sequenceNumber).getData().array(),
+							StandardCharsets.UTF_8);
 
-					log.info("{} | {}", sequenceNumber, data);
+					log.info("Sequence number: {} | Data: {}", sequenceNumber, data);
 
-					List<String> requestDtoList = mapper.readValue(data, new TypeReference<List<String>>() {
-					});
-
-					consolidateRecord(consolidatedDataDto, requestDtoList);
+					RequestDto requestDto = new RequestDto();
+					requestDto.setString(data);
+					requestDtoList.add(requestDto);
 				}
 			}
 
+			consolidateRecord(consolidatedDataDto, requestDtoList);
+
 			log.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(consolidatedDataDto));
-		} catch (UnsupportedEncodingException | JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			log.error(e.getMessage());
 		}
 
@@ -84,13 +87,13 @@ public class CacheService {
 		return sequenceNumber;
 	}
 
-	private void consolidateRecord(List<String> consolidatedRequestDto, List<String> requestDtoList) {
-		for (String record : requestDtoList) {
+	private void consolidateRecord(List<RequestDto> consolidatedRequestDto, List<RequestDto> requestDtoList) {
+		for (RequestDto record : requestDtoList) {
 			consolidatedRequestDto.add(record);
 		}
 	}
 
-	private HttpStatus callAPI(List<String> dataDto) {
+	private HttpStatus callAPI(List<RequestDto> dataDto) {
 		HttpStatus statusCode = null;
 
 		RestTemplate restTemplate = new RestTemplate();
@@ -100,7 +103,7 @@ public class CacheService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.ALL));
 
-		HttpEntity<List<String>> entity = new HttpEntity<>(dataDto, headers);
+		HttpEntity<List<RequestDto>> entity = new HttpEntity<>(dataDto, headers);
 
 		try {
 			response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
