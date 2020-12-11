@@ -1,6 +1,6 @@
 package com.dev.kinesis;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -101,8 +101,8 @@ public class Consumer implements CommandLineRunner {
 				log.info("=============================================");
 				try {
 					log.info(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(record));
-					log.info(new String(record.getData().array(), "UTF-8"));
-				} catch (JsonProcessingException | UnsupportedEncodingException e) {
+					log.info(new String(record.getData().array(), StandardCharsets.UTF_8));
+				} catch (JsonProcessingException e) {
 					log.info(e.getMessage());
 				}
 				log.info("=============================================");
