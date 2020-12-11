@@ -54,14 +54,14 @@ public class RecordProcessor implements ShardRecordProcessor {
 	public void processRecords(ProcessRecordsInput processRecordsInput) {
 		shardMap.put(SHARD_KEY, shardId);
 		try {
-			log.info("Thread Name:" + Thread.currentThread().getName() + " Processing {} record(s)",
+			log.info("Thread Name: {} | Processing {} record(s)",Thread.currentThread().getName(),
 					processRecordsInput.records().size());
 
 			for (KinesisClientRecord record : processRecordsInput.records()) {
 				CharBuffer charBuffer = StandardCharsets.US_ASCII.decode(record.data());
 				String text = charBuffer.toString();
 
-				log.info("Processing record pk: {} -- Seq: {} -- Data: {}", record.partitionKey(),
+				log.info("Processing record pk: {} | Sequence number: {} | Data: {}", record.partitionKey(),
 						record.sequenceNumber(), text);
 
 				defaultService.process(text);
