@@ -1,24 +1,13 @@
 package com.khee.dev.model;
 
-import java.util.List;
-
 public class DataDto {
-	private String deliveryTime;
-	private List<Pixel> pixels;
+	private String uuid;
 
-	public String getDeliveryTime() {
-		return deliveryTime;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setDeliveryTime(String deliveryTime) {
-		this.deliveryTime = deliveryTime;
-	}
-
-	public List<Pixel> getPixels() {
-		return pixels;
-	}
-
-	public void setPixels(List<Pixel> pixels) {
-		this.pixels = pixels;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

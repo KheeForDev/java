@@ -1,40 +1,22 @@
 package com.khee.dev.model;
 
 public class CsvDataDto {
-	private int campaignId;
-	private String partnerUuid;
-	private String bkUuid;
-	private String deliveryTime;
+	private String uuid;
+	private Integer count;
 
-	public int getCampaignId() {
-		return campaignId;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setCampaignId(int campaignId) {
-		this.campaignId = campaignId;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public String getPartnerUuid() {
-		return partnerUuid;
+	public Integer getCount() {
+		return count;
 	}
 
-	public void setPartnerUuid(String partnerUuid) {
-		this.partnerUuid = partnerUuid;
-	}
-
-	public String getBkUuid() {
-		return bkUuid;
-	}
-
-	public void setBkUuid(String bkUuid) {
-		this.bkUuid = bkUuid;
-	}
-
-	public String getDeliveryTime() {
-		return deliveryTime;
-	}
-
-	public void setDeliveryTime(String deliveryTime) {
-		this.deliveryTime = deliveryTime;
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 }
