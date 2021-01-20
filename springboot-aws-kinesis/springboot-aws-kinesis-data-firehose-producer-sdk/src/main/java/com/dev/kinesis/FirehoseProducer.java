@@ -33,7 +33,7 @@ public class FirehoseProducer {
 
 		PutRecordRequest putRecordRequest = new PutRecordRequest();
 		putRecordRequest.setDeliveryStreamName(properties.getAwsFirehoseStream());
-		putRecordRequest.setRecord(new Record().withData(ByteBuffer.wrap(String.valueOf(payload).getBytes())));
+		putRecordRequest.setRecord(new Record().withData(ByteBuffer.wrap(String.valueOf(payload + "\n").getBytes())));
 
 		PutRecordResult putRecordResult = firehoseClient.putRecord(putRecordRequest);
 
