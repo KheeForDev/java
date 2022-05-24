@@ -1,0 +1,15 @@
+2022-05-24 22:38:32,461 [INFO  ] SpringbootJwtApplication.logStarting - Starting SpringbootJwtApplication using Java 1.8.0_331 on Khees-Air with PID 745 (/Users/kheehouytan/eclipse-workspace/springboot-jwt/target/classes started by kheehouytan in /Users/kheehouytan/eclipse-workspace/springboot-jwt)
+2022-05-24 22:38:32,474 [DEBUG ] SpringbootJwtApplication.logStarting - Running with Spring Boot v2.7.0, Spring v5.3.20
+2022-05-24 22:38:32,475 [INFO  ] SpringbootJwtApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2022-05-24 22:38:39,614 [INFO  ] SpringbootJwtApplication.logStarted - Started SpringbootJwtApplication in 7.646 seconds (JVM running for 8.589)
+2022-05-24 22:44:43,532 [INFO  ] SpringbootJwtApplication.logStarting - Starting SpringbootJwtApplication using Java 1.8.0_331 on Khees-Air with PID 803 (/Users/kheehouytan/eclipse-workspace/springboot-jwt/target/classes started by kheehouytan in /Users/kheehouytan/eclipse-workspace/springboot-jwt)
+2022-05-24 22:44:43,545 [DEBUG ] SpringbootJwtApplication.logStarting - Running with Spring Boot v2.7.0, Spring v5.3.20
+2022-05-24 22:44:43,546 [INFO  ] SpringbootJwtApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2022-05-24 22:44:50,593 [INFO  ] SpringbootJwtApplication.logStarted - Started SpringbootJwtApplication in 7.55 seconds (JVM running for 8.499)
+2022-05-24 22:45:06,000 [INFO  ] UserServiceImpl.getUsers - Fetching all users {}
+2022-05-24 22:45:17,811 [INFO  ] UserServiceImpl.getUsers - Fetching all users {}
+2022-05-24 22:45:27,344 [INFO  ] SpringbootJwtApplication.logStarting - Starting SpringbootJwtApplication using Java 1.8.0_331 on Khees-Air with PID 806 (/Users/kheehouytan/eclipse-workspace/springboot-jwt/target/classes started by kheehouytan in /Users/kheehouytan/eclipse-workspace/springboot-jwt)
+2022-05-24 22:45:27,358 [DEBUG ] SpringbootJwtApplication.logStarting - Running with Spring Boot v2.7.0, Spring v5.3.20
+2022-05-24 22:45:27,358 [INFO  ] SpringbootJwtApplication.logStartupProfileInfo - No active profile set, falling back to 1 default profile: "default"
+2022-05-24 22:45:34,540 [INFO  ] SpringbootJwtApplication.logStarted - Started SpringbootJwtApplication in 7.697 seconds (JVM running for 8.658)
+2022-05-24 22:45:45,960 [INFO  ] UserServiceImpl.getUsers - Fetching all users {}
