@@ -19,7 +19,7 @@ public class User {
 	private String username;
 	private String password;
 	@ManyToMany(fetch = FetchType.EAGER)
-	private Collection<Role> roles = new ArrayList<>();
+	private Collection<Role> roles = new ArrayList<Role>();
 
 	public User() {
 
