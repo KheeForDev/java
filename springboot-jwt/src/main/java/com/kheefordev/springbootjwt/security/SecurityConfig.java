@@ -42,7 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		customAuthenticationFilter.setFilterProcessesUrl("/api/login");
 		http.addFilter(customAuthenticationFilter);
 
-		http.csrf().disable();
+		// .cors()
+		// tells spring security to enable cors
+		// server is ready to whitelist/filter the origins.		
+		http.csrf().disable().cors();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -50,11 +53,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_SUPER_ADMIN",
 				"ROLE_ADMIN");
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/user/save").permitAll();
-		http.authorizeRequests().anyRequest().authenticated();
+		
+		// httpBasic()
+		// tells spring security that clients are going to authenticate the requests through basic authentication method
+		http.authorizeRequests().anyRequest().authenticated().and().httpBasic();
 	}
 
 	@Bean
-
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
