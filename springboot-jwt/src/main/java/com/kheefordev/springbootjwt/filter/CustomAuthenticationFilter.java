@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -39,8 +41,22 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+
+		String username = "";
+		String password = "";
+
+		// for request using application/json
+		try {
+			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+			username = (String) requestMap.get("username");
+			password = (String) requestMap.get("password");
+		} catch (IOException e) {
+			throw new AuthenticationServiceException(e.getMessage(), e);
+		}
+
+		// for request using application/x-www-form-urlencoded
+		// username = request.getParameter("username");
+		// password = request.getParameter("password");
 
 		log.info("username: {}", username);
 		log.info("password: {}", password);
@@ -70,9 +86,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 //		response.setHeader("accessToken", accessToken);
 //		response.setHeader("refreshToken", refreshToken);
 
-		Map<String, String> tokens = new HashMap<String, String>();
+		List<String> roles = new ArrayList<String>();
+		for (GrantedAuthority grantedAuthority : user.getAuthorities()) {
+			roles.add(grantedAuthority.getAuthority());
+		}
+		
+		Map<String, Object> tokens = new HashMap<String, Object>();
 		tokens.put("accessToken", accessToken);
 		tokens.put("refreshToken", refreshToken);
+		tokens.put("roles", roles);
 
 		response.setContentType("application/json");
 		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
