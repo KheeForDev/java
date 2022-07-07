@@ -24,6 +24,7 @@ import com.kheefordev.springbootjwt.service.UserServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
 	@Autowired
 	private UserServiceImpl userDetailsService;
 
@@ -32,6 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private CustomAuthorizationFilter customAuthorizationFilter;
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -55,24 +62,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				return new CorsConfiguration().applyPermitDefaultValues();
 			}
 		});
+		
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/login").permitAll();
-		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_SUPER_ADMIN",
-				"ROLE_ADMIN");
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_ADMIN");
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/user/save").permitAll();
 
 		// httpBasic()
 		// tells spring security that clients are going to authenticate the requests
 		// through basic authentication method
 		http.authorizeRequests().anyRequest().authenticated().and().httpBasic();
-	}
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 }
