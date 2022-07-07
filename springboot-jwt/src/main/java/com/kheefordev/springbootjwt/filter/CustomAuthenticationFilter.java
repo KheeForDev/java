@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -50,7 +49,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 			username = (String) requestMap.get("username");
 			password = (String) requestMap.get("password");
 		} catch (IOException e) {
-			throw new AuthenticationServiceException(e.getMessage(), e);
+			log.error(e.getMessage());
 		}
 
 		// for request using application/x-www-form-urlencoded
