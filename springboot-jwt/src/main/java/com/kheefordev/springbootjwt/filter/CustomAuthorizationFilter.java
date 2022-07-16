@@ -36,43 +36,47 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String authorizationHeader = request.getHeader("Authorization");
-
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			try {
-				String token = authorizationHeader.substring("Bearer ".length());
-				log.info("token: {}", token);
-				Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-				JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-				DecodedJWT decodedJWT = jwtVerifier.verify(token);
-				String username = decodedJWT.getSubject();
-				log.info("username: {}", username);
-
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-				for (GrantedAuthority auth : userDetails.getAuthorities()) {
-					log.info(auth.getAuthority());
-				}
-
-				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-
-				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-				filterChain.doFilter(request, response);
-			} catch (Exception e) {
-				log.error("error message: {}", e.getMessage());
-				response.setHeader("error", e.getMessage());
-				response.setStatus(403);
-
-				Map<String, String> error = new HashMap<String, String>();
-				error.put("errorMessage", e.getMessage());
-
-				response.setContentType("application/json");
-				new ObjectMapper().writeValue(response.getOutputStream(), error);
-			}
-		} else {
-			log.info("authorization header is null or does not starts with Bearer");
+		if (request.getServletPath().equals("api/login") || request.getServletPath().equals("api/refresh")) {
 			filterChain.doFilter(request, response);
+		} else {
+			String authorizationHeader = request.getHeader("Authorization");
+
+			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+				try {
+					String token = authorizationHeader.substring("Bearer ".length());
+					log.info("token: {}", token);
+					Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+					JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+					DecodedJWT decodedJWT = jwtVerifier.verify(token);
+					String username = decodedJWT.getSubject();
+					log.info("username: {}", username);
+
+					UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+					for (GrantedAuthority auth : userDetails.getAuthorities()) {
+						log.info(auth.getAuthority());
+					}
+
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, userDetails.getAuthorities());
+
+					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+					filterChain.doFilter(request, response);
+				} catch (Exception e) {
+					log.error("error message: {}", e.getMessage());
+					response.setHeader("error", e.getMessage());
+					response.setStatus(403);
+
+					Map<String, String> error = new HashMap<String, String>();
+					error.put("errorMessage", e.getMessage());
+
+					response.setContentType("application/json");
+					new ObjectMapper().writeValue(response.getOutputStream(), error);
+				}
+			} else {
+				log.info("authorization header is null or does not starts with Bearer");
+				filterChain.doFilter(request, response);
+			}
 		}
 	}
 }

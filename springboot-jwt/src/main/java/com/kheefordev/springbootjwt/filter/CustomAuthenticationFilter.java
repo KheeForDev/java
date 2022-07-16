@@ -44,17 +44,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		String password = "";
 
 		// for request using application/json
-		try {
-			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
-			username = (String) requestMap.get("username");
-			password = (String) requestMap.get("password");
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
+//		try {
+//			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+//			username = (String) requestMap.get("username");
+//			password = (String) requestMap.get("password");
+//		} catch (IOException e) {
+//			log.error(e.getMessage());
+//		}
 
 		// for request using application/x-www-form-urlencoded
-		// username = request.getParameter("username");
-		// password = request.getParameter("password");
+		 username = request.getParameter("username");
+		 password = request.getParameter("password");
 
 		log.info("username: {}", username);
 		log.info("password: {}", password);
@@ -70,6 +70,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 			Authentication authentication) throws IOException, ServletException {
 		User user = (User) authentication.getPrincipal();
 		Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+		
+//		Token with 10 minutes validity
 		String accessToken = JWT.create().withSubject(user.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
 				.withIssuer(request.getRequestURI())
@@ -77,6 +79,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 						user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.sign(algorithm);
 
+//		Token with 30 minutes validity
 		String refreshToken = JWT.create().withSubject(user.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
 				.withIssuer(request.getRequestURI()).sign(algorithm);
