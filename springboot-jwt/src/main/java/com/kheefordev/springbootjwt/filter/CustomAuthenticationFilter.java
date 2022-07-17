@@ -44,17 +44,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		String password = "";
 
 		// for request using application/json
-//		try {
-//			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
-//			username = (String) requestMap.get("username");
-//			password = (String) requestMap.get("password");
-//		} catch (IOException e) {
-//			log.error(e.getMessage());
-//		}
+		try {
+			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+			username = (String) requestMap.get("username");
+			password = (String) requestMap.get("password");
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
 
 		// for request using application/x-www-form-urlencoded
-		 username = request.getParameter("username");
-		 password = request.getParameter("password");
+		// username = request.getParameter("username");
+		// password = request.getParameter("password");
 
 		log.info("username: {}", username);
 		log.info("password: {}", password);
@@ -73,7 +73,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		
 //		Token with 10 minutes validity
 		String accessToken = JWT.create().withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+//				.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 10000))
 				.withIssuer(request.getRequestURI())
 				.withClaim("roles",
 						user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
@@ -81,7 +82,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
 //		Token with 30 minutes validity
 		String refreshToken = JWT.create().withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+//				.withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 15000))
 				.withIssuer(request.getRequestURI()).sign(algorithm);
 
 //		response.setHeader("accessToken", accessToken);
@@ -94,7 +96,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		
 		Map<String, Object> tokens = new HashMap<String, Object>();
 		tokens.put("accessToken", accessToken);
-		tokens.put("refreshToken", refreshToken);
+//		tokens.put("refreshToken", refreshToken);
 		tokens.put("roles", roles);
 
 		response.setContentType("application/json");

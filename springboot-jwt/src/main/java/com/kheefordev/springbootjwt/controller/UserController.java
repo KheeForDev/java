@@ -75,42 +75,36 @@ public class UserController {
 
 	@PostMapping("/refreshtoken")
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String authorizationHeader = request.getHeader("Authorization");
+		try {
+			Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			try {
-				String token = authorizationHeader.substring("Bearer ".length());
-				Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-				JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-				DecodedJWT decodedJWT = jwtVerifier.verify(token);
-				String username = decodedJWT.getSubject();
+			// for request using application/json
+			Map<?, ?> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+			String username = (String) requestMap.get("username");
 
-				User user = userService.getUser(username);
+			User user = userService.getUser(username);
 
-//				Token with 10 minutes validity
-				String refreshToken = JWT.create().withSubject(user.getUsername())
-						.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-						.withIssuer(request.getRequestURI())
-						.withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-						.sign(algorithm);
+			// Token with 10 minutes validity
+			String accessToken = JWT.create().withSubject(user.getUsername())
+					.withExpiresAt(new Date(System.currentTimeMillis() + 10000))
+					.withIssuer(request.getRequestURI())
+					.withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+					.sign(algorithm);
 
-				Map<String, Object> tokens = new HashMap<String, Object>();
-				tokens.put("refreshToken", refreshToken);
+			Map<String, Object> tokens = new HashMap<String, Object>();
+			tokens.put("accessToken", accessToken);
 
-				response.setContentType("application/json");
-				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-			} catch (Exception e) {
-				response.setHeader("error", e.getMessage());
-				response.setStatus(403);
+			response.setContentType("application/json");
+			new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+		} catch (Exception e) {
+			response.setHeader("error", e.getMessage());
+			response.setStatus(403);
 
-				Map<String, String> error = new HashMap<String, String>();
-				error.put("errorMessage", e.getMessage());
+			Map<String, String> error = new HashMap<String, String>();
+			error.put("errorMessage", e.getMessage());
 
-				response.setContentType("application/json");
-				new ObjectMapper().writeValue(response.getOutputStream(), error);
-			}
-		} else {
-			throw new RuntimeException("Refresh token is missing");
+			response.setContentType("application/json");
+			new ObjectMapper().writeValue(response.getOutputStream(), error);
 		}
 	}
 }

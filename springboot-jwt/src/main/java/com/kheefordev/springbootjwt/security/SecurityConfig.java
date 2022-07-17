@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/login").permitAll();
-		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/refreshtoken").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/refreshtoken").permitAll();
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_ADMIN");
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/user/save").permitAll();
 

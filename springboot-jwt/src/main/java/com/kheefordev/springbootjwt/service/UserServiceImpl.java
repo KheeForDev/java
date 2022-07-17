@@ -31,12 +31,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public UserDetails loadUserByUsername(String username)  {
+	public UserDetails loadUserByUsername(String username) {
 		User user = userRepository.findByUsername(username);
 
 		if (user == null) {
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.getRoles().forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role.getName()));
 		});
-		
+
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 				authorities);
 	}
