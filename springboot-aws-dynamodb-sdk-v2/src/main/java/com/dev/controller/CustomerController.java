@@ -1,6 +1,7 @@
 package com.dev.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dev.model.Customer;
+import com.dev.model.Properties;
 import com.dev.repository.CustomerRepository;
+import com.dev.util.DateUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class CustomerController {
+	@Autowired
+	private Properties properties;
 
+	@Autowired
+	private DateUtil dateUtil;
+	
 	@Autowired
 	private CustomerRepository customerRepository;
 
@@ -33,7 +41,10 @@ public class CustomerController {
 	}
 
 	@PostMapping("/add/customer")
-	public String saveCustomer(@RequestBody Customer customer) {
+	public String saveCustomer(@RequestBody Customer customer) {		
+		customer.setTimeToLive(dateUtil.addCalendar(dateUtil.getCurrentCalendar(), Calendar.DATE,
+				properties.getAwsDynamodbTimeToLive()).getTime() / 1000);
+		
 		return customerRepository.saveCustomer(customer);
 	}
 

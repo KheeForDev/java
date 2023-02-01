@@ -56,7 +56,7 @@ public class CustomerRepository {
 
 		Item item = new Item().withPrimaryKey("customerId", String.valueOf(UUID.randomUUID()))
 				.with("firstName", customer.getFirstName()).with("lastName", customer.getLastName())
-				.with("email", customer.getEmail());
+				.with("email", customer.getEmail()).with("timeToLive", customer.getTimeToLive());
 
 		PutItemOutcome putItemOutcome = table.putItem(item);
 
@@ -74,7 +74,7 @@ public class CustomerRepository {
 
 	public void saveCustomers(List<Customer> customerList) {
 		System.out.println("Saving number of customer: " + customerList.size());
-		
+
 		List<Item> itemList = new ArrayList<>();
 
 		for (Customer customer : customerList) {

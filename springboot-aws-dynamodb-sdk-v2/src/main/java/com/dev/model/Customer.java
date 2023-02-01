@@ -5,6 +5,7 @@ public class Customer {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private long timeToLive;
 
 	public String getCustomerId() {
 		return customerId;
@@ -36,5 +37,13 @@ public class Customer {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public long getTimeToLive() {
+		return timeToLive;
+	}
+
+	public void setTimeToLive(long timeToLive) {
+		this.timeToLive = timeToLive;
 	}
 }

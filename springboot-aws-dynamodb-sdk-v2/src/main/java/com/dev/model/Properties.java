@@ -17,6 +17,9 @@ public class Properties {
 	@Value("${aws.dynamodb.secret.key}")
 	private String awsDynamodbSecretKey;
 
+	@Value("${aws.dynamodb.timeToLive}")
+	private int awsDynamodbTimeToLive;
+
 	public String getAwsRegion() {
 		return awsRegion;
 	}
@@ -47,5 +50,13 @@ public class Properties {
 
 	public void setAwsDynamodbSecretKey(String awsDynamodbSecretKey) {
 		this.awsDynamodbSecretKey = awsDynamodbSecretKey;
+	}
+
+	public int getAwsDynamodbTimeToLive() {
+		return awsDynamodbTimeToLive;
+	}
+
+	public void setAwsDynamodbTimeToLive(int awsDynamodbTimeToLive) {
+		this.awsDynamodbTimeToLive = awsDynamodbTimeToLive;
 	}
 }
