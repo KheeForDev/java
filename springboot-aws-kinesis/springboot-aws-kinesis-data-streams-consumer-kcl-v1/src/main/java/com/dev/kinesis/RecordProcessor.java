@@ -14,7 +14,7 @@ import com.amazonaws.services.kinesis.clientlibrary.lib.worker.ShutdownReason;
 import com.amazonaws.services.kinesis.clientlibrary.types.InitializationInput;
 import com.amazonaws.services.kinesis.clientlibrary.types.ProcessRecordsInput;
 import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownInput;
-import com.dev.service.CacheService;
+import com.dev.service.DefaultService;
 
 @Component
 public class RecordProcessor implements IRecordProcessor {
@@ -32,7 +32,7 @@ public class RecordProcessor implements IRecordProcessor {
 	private long nextCheckpointTimeInMillis;
 
 	@Autowired
-	private CacheService cacheService;
+	private DefaultService defaultService;
 
 	@Override
 	public void initialize(InitializationInput initializationInput) {
@@ -44,7 +44,7 @@ public class RecordProcessor implements IRecordProcessor {
 	public void processRecords(ProcessRecordsInput processRecordsInput) {
 		log.info("Processing {} records from {}", processRecordsInput.getRecords().size(), kinesisShardId);
 
-		checkpointSequenceNumber = cacheService.process(processRecordsInput.getRecords());
+		checkpointSequenceNumber = defaultService.process(processRecordsInput.getRecords());
 
 		// Checkpoint once every checkpoint interval.
 		if (System.currentTimeMillis() > nextCheckpointTimeInMillis && checkpointSequenceNumber != null) {
