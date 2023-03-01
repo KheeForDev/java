@@ -1,6 +1,6 @@
 package com.dev.model;
 
-public class RequestDto {
+public class MessageDto {
 	private String messageId;
 	private String name;
 	private int age;

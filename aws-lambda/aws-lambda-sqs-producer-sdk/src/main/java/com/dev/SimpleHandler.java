@@ -17,11 +17,10 @@ public class SimpleHandler {
 
 	public String handleRequest(Map<String, Object> requestMap, Context context) {
 		LambdaLogger logger = context.getLogger();
-		RequestDto requestDto = null;
 
 		String body = requestMap.get("body").toString();
 		logger.log("[Request]: " + body);
-		requestDto = new Gson().fromJson(body, RequestDto.class);
+		RequestDto requestDto = new Gson().fromJson(body, RequestDto.class);
 
 		String sqsResponse = sendSQSMessage(body, requestDto.getMessageId());
 		logger.log("[SQS Response]: " + sqsResponse);
