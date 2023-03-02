@@ -42,9 +42,8 @@ public class SimpleHandler {
 
 			MessageDto messageDto = new Gson().fromJson(msg, MessageDto.class);
 
-			if (messageDto.getName().toLowerCase().contains("fail")) {
+			if (Integer.valueOf(messageDto.getMessageId()) % 2 == 0) {
 				batchItemFailureList.add(new SQSBatchResponse.BatchItemFailure(record.getMessageId()));
-				throw new RuntimeException("Unable to process message");
 			}
 		});
 
