@@ -54,7 +54,7 @@ public class CustomerRepository {
 	public String saveCustomer(Customer customer) {
 		Table table = dynamoDB.getTable("customer");
 
-		Item item = new Item().withPrimaryKey("customerId", String.valueOf(UUID.randomUUID()))
+		Item item = new Item().withPrimaryKey("customerId", customer.getCustomerId())
 				.with("firstName", customer.getFirstName()).with("lastName", customer.getLastName())
 				.with("email", customer.getEmail()).with("timeToLive", customer.getTimeToLive());
 
@@ -78,7 +78,7 @@ public class CustomerRepository {
 		List<Item> itemList = new ArrayList<>();
 
 		for (Customer customer : customerList) {
-			Item item = new Item().withPrimaryKey("customerId", String.valueOf(UUID.randomUUID()))
+			Item item = new Item().withPrimaryKey("customerId", customer.getCustomerId())
 					.with("firstName", customer.getFirstName()).with("lastName", customer.getLastName())
 					.with("email", customer.getEmail());
 			itemList.add(item);
