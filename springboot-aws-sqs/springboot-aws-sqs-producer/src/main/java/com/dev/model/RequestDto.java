@@ -1,13 +1,11 @@
 package com.dev.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RequestDto {
-	private String string;
-
-	public String getString() {
-		return string;
-	}
-
-	public void setString(String string) {
-		this.string = string;
-	}
+	private String data;
+	private String insertedDt;
 }
