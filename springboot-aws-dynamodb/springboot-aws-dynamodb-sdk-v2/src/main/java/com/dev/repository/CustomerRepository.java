@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,6 +16,7 @@ import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.dev.model.Customer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -84,7 +84,7 @@ public class CustomerRepository {
 			itemList.add(item);
 		}
 
-		TableWriteItems tableWriteItems = new TableWriteItems("customer");
+		TableWriteItems tableWriteItems = new TableWriteItems("Customer");
 		tableWriteItems.withItemsToPut(itemList);
 		BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(tableWriteItems);
 
@@ -96,7 +96,24 @@ public class CustomerRepository {
 	}
 
 	public Customer getCustomerById(String customerId) {
-		return null;
+		ObjectMapper mapper = new ObjectMapper();
+		Customer customer = null;
+
+		Table table = dynamoDB.getTable("Customer");
+		GetItemSpec spec = new GetItemSpec().withPrimaryKey("id", customerId);
+		Item item = table.getItem(spec);
+
+		if (item != null) {
+			String jsonItem = item.toJSON();
+
+			try {
+				customer = mapper.readValue(jsonItem, Customer.class);
+			} catch (JsonProcessingException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		return customer;
 	}
 
 	public String deleteCustomerById(String customerId) {
