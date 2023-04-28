@@ -1,4 +1,4 @@
-package com.dev;
+package com.kheefordev;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;

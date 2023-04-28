@@ -1,4 +1,4 @@
-package com.dev;
+package com.kheefordev;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.events.SQSBatchResponse;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
-import com.dev.model.MessageDto;
 import com.google.gson.Gson;
+import com.kheefordev.model.MessageDto;
 
 public class SimpleHandler {
 	public void handleRequest(SQSEvent input, Context context) {

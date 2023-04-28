@@ -1,11 +1,11 @@
-package com.dev;
+package com.kheefordev;
 
 import java.util.Map;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.dev.model.RequestDto;
 import com.google.gson.Gson;
+import com.kheefordev.model.RequestDto;
 
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;

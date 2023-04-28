@@ -1,4 +1,4 @@
-package com.dev.model;
+package com.kheefordev.model;
 
 public class RequestDto {
 	private String messageId;
