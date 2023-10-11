@@ -1,4 +1,4 @@
-package com.dev.model;
+package com.kheefordev.model;
 
 import lombok.Getter;
 import lombok.Setter;

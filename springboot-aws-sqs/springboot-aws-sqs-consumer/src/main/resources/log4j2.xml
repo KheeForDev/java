@@ -11,7 +11,7 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger name="com.dev" level="debug" additivity="false">
+        <Logger name="com.kheefordev" level="debug" additivity="false">
             <AppenderRef ref="LogToFile"/>
             <AppenderRef ref="LogToConsole"/>
         </Logger>

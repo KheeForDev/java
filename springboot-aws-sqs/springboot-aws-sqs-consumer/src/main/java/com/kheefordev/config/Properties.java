@@ -1,14 +1,14 @@
-package com.dev.model;
+package com.kheefordev.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Component
+@Configuration
 public class Properties {
 	@Value("${aws.region}")
 	private String awsRegion;
@@ -21,4 +21,7 @@ public class Properties {
 
 	@Value("${aws.sqs.queue.url}")
 	private String awsSqsQueueUrl;
+
+	@Value("${aws.sqs.message.visibility.second}")
+	private Integer awsSqsMessageVisibilitySecond;
 }
