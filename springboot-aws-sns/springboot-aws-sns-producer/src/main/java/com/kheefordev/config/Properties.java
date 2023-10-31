@@ -1,4 +1,4 @@
-package com.dev.model;
+package com.kheefordev.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
